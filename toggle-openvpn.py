@@ -53,6 +53,9 @@ class Tray:
         vpn_exit = gtk.MenuItem(label='Quit')
         vpn_exit.connect('activate', self.quit)
         menu.append(vpn_exit)
+        vpn_exit2 = gtk.MenuItem(label='Quit (No Disconnect)')
+        vpn_exit2.connect('activate', self.quit, False)
+        menu.append(vpn_exit2)
 
         menu.show_all()
         self.indicator.set_menu(menu)
@@ -163,8 +166,9 @@ class Tray:
             self.notify("Disconnected but failed to close all sessions")
 
 
-    def quit(self,_):
-        self._disconnect_vpn()
+    def quit(self,_,disconnect=True):
+        if disconnect:
+            self._disconnect_vpn()
         gtk.main_quit()
         if os.path.exists(self.lockfile):
             os.remove(self.lockfile)
